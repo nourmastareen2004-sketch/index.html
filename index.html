@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NOUR MASTAREEN - مواقيت الصلاة</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800&display=swap');
+
+        :root {
+            --red-dark: #6b0f1a;
+            --red-main: #8f1422;
+            --red-light: #b91c1c;
+            --gold: #eab308;
+            --gold-text: #d99b26;
+            --bg-cream: #f8f5f0;
+            --card-bg: #ffffff;
+            --text-dark: #2c2420;
+            --text-muted: #6e655f;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-cream);
+            background-image: radial-gradient(#e5dfd5 1px, transparent 1px);
+            background-size: 20px 20px;
+            color: var(--text-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            min-height: 100vh;
+            background-color: var(--bg-cream);
+            background-image: 
+                linear-gradient(45deg, rgba(143, 20, 34, 0.02) 25%, transparent 25%), 
+                linear-gradient(-45deg, rgba(143, 20, 34, 0.02) 25%, transparent 25%);
+            background-size: 24px 24px;
+            position: relative;
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header Section */
+        .hero-header {
+            background: linear-gradient(160deg, var(--red-dark) 0%, var(--red-main) 60%, #7a101c 100%);
+            color: #ffffff;
+            padding: 28px 20px 58px;
+            text-align: center;
+            border-bottom-left-radius: 32px;
+            border-bottom-right-radius: 32px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 6px 20px rgba(107, 15, 26, 0.25);
+        }
+
+        /* Subtle geometric pattern overlay in header */
+        .hero-header::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-image: radial-gradient(rgba(255,255,255,0.06) 1.5px, transparent 1.5px);
+            background-size: 18px 18px;
+            pointer-events: none;
+        }
+
+        .brand-top {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.8);
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .next-prayer-name {
+            font-size: 2.3rem;
+            font-weight: 800;
+            color: #e5b54f;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+            line-height: 1.2;
+            margin-bottom: 4px;
+        }
+
+        .countdown-timer {
+            font-size: 3.1rem;
+            font-weight: 700;
+            color: #ffffff;
+            letter-spacing: 2px;
+            font-variant-numeric: tabular-nums;
+            line-height: 1.15;
+            margin-bottom: 16px;
+            direction: ltr;
+        }
+
+        .date-pill {
+            display: inline-block;
+            background-color: rgba(0, 0, 0, 0.28);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            padding: 6px 18px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #f8fafc;
+        }
+
+        /* Prayer Cards List */
+        .prayers-list {
+            padding: 0 18px;
+            margin-top: -32px;
+            display: flex;
+            flex-direction: column;
+            gap: 13px;
+            z-index: 10;
+            flex: 1;
+        }
+
+        .prayer-card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+            border: 1.5px solid transparent;
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Active / Next Prayer Highlight */
+        .prayer-card.active {
+            border-color: #e5b54f;
+            box-shadow: 0 6px 18px rgba(143, 20, 34, 0.12);
+            background: linear-gradient(90deg, #ffffff 0%, #fffdf7 100%);
+        }
+
+        .prayer-card.active::before {
+            content: "";
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 5px;
+            background-color: #d99b26;
+        }
+
+        .prayer-right {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .icon-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #f3f1ed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #8c827a;
+            transition: all 0.25s;
+        }
+
+        .prayer-card.active .icon-circle {
+            background-color: rgba(143, 20, 34, 0.1);
+            color: var(--red-main);
+        }
+
+        .prayer-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .prayer-time {
+            font-size: 1.12rem;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+
+        .prayer-card.active .prayer-time {
+            color: #b47b16;
+            font-weight: 800;
+        }
+
+        /* Telegram Red CTA Button */
+        .cta-wrapper {
+            padding: 16px 18px 4px;
+            z-index: 10;
+        }
+
+        .telegram-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            background: linear-gradient(135deg, var(--red-main) 0%, var(--red-light) 100%);
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 1.1rem;
+            font-weight: 800;
+            padding: 15px 20px;
+            border-radius: 16px;
+            box-shadow: 0 6px 18px rgba(143, 20, 34, 0.28);
+            border: 1.5px solid rgba(255, 255, 255, 0.18);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .telegram-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(143, 20, 34, 0.36);
+        }
+
+        .telegram-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Footer */
+        .app-footer {
+            text-align: center;
+            padding: 18px 15px 24px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #8c827a;
+        }
+
+        .app-footer a {
+            color: var(--red-main);
+            font-weight: 800;
+            text-decoration: none;
+            border-bottom: 1.5px solid rgba(143, 20, 34, 0.3);
+            padding-bottom: 1px;
+            transition: color 0.2s, border-color 0.2s;
+        }
+
+        .app-footer a:hover {
+            color: var(--red-light);
+            border-color: var(--red-light);
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <!-- Top Red Header -->
+    <header class="hero-header">
+        <div class="brand-top">مواقيت الصلاة</div>
+        <div class="next-prayer-name" id="nextPrayerName">صلاة الظهر</div>
+        <div class="countdown-timer" id="countdownTimer">01:42:56</div>
+        <div class="date-pill" id="dateDisplay">جاري تحميل التاريخ...</div>
+    </header>
+
+    <!-- Prayer Times Cards -->
+    <main class="prayers-list" id="prayersList">
+        <!-- Cards rendered dynamically via JS -->
+    </main>
+
+    <!-- Telegram Red Button -->
+    <div class="cta-wrapper">
+        <a href="https://t.me/BAC_2024BOT" target="_blank" rel="noopener noreferrer" class="telegram-btn">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/>
+            </svg>
+            <span>بوت اختبارات ونماذج بكلوريا</span>
+        </a>
+    </div>
+
+    <!-- Clean Branded Footer -->
+    <footer class="app-footer">
+        <a href="https://t.me/N_o_u_r_511" target="_blank" rel="noopener noreferrer">تصميم NOUR MASTAREEN</a>
+    </footer>
+</div>
+
+<script>
+    const prayersData = [
+        { id: 'fajr', name: 'صلاة الفجر', time24: '05:50', display: '5:50 ص', icon: 'moon' },
+        { id: 'sunrise', name: 'الشروق', time24: '07:17', display: '7:17 ص', icon: 'sunrise' },
+        { id: 'dhuhr', name: 'صلاة الظهر', time24: '12:22', display: '12:22 م', icon: 'sun' },
+        { id: 'asr', name: 'صلاة العصر', time24: '15:09', display: '3:09 م', icon: 'sun-dim' },
+        { id: 'maghrib', name: 'صلاة المغرب', time24: '17:27', display: '5:27 م', icon: 'sunset' },
+        { id: 'isha', name: 'صلاة العشاء', time24: '18:50', display: '6:50 م', icon: 'moon-cloud' }
+    ];
+
+    const iconsSVG = {
+        'moon': '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>',
+        'sunrise': '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v8"/><path d="m4.93 10.93 1.41 1.41"/><path d="M2 18h2"/><path d="M20 18h2"/><path d="m19.07 10.93-1.41 1.41"/><path d="M22 22H2"/><path d="m8 6 4-4 4 4"/><path d="M16 18a4 4 0 0 0-8 0"/></svg>',
+        'sun': '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>',
+        'sun-dim': '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 4h.01"/><path d="M20 12h.01"/><path d="M12 20h.01"/><path d="M4 12h.01"/><path d="M17.657 6.343h.01"/><path d="M17.657 17.657h.01"/><path d="M6.343 17.657h.01"/><path d="M6.343 6.343h.01"/></svg>',
+        'sunset': '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 10V2"/><path d="m4.93 10.93 1.41 1.41"/><path d="M2 18h2"/><path d="M20 18h2"/><path d="m19.07 10.93-1.41 1.41"/><path d="M22 22H2"/><path d="m16 6-4 4-4-4"/><path d="M16 18a4 4 0 0 0-8 0"/></svg>',
+        'moon-cloud': '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>'
+    };
+
+    function updateDateDisplay() {
+        const now = new Date();
+        const gregorian = new Intl.DateTimeFormat('ar-SY', {
+            weekday: 'long',
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric'
+        }).format(now);
+
+        let hijri = '';
+        try {
+            hijri = new Intl.DateTimeFormat('ar-SA-u-ca-islamic', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            }).format(now);
+        } catch (e) {
+            hijri = '17 جمادى الآخرة 1448';
+        }
+
+        document.getElementById('dateDisplay').textContent = `${hijri}  |  ${gregorian}`;
+    }
+
+    function updatePrayerCountdown() {
+        const now = new Date();
+        let nextPrayer = null;
+        let targetTime = null;
+
+        for (let p of prayersData) {
+            const [hours, minutes] = p.time24.split(':').map(Number);
+            const pDate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), hours, minutes, 0);
+            if (pDate > now) {
+                nextPrayer = p;
+                targetTime = pDate;
+                break;
+            }
+        }
+
+        if (!nextPrayer) {
+            nextPrayer = prayersData[0];
+            const [hours, minutes] = nextPrayer.time24.split(':').map(Number);
+            targetTime = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, hours, minutes, 0);
+        }
+
+        document.getElementById('nextPrayerName').textContent = nextPrayer.name;
+
+        const diffMs = targetTime - now;
+        const totalSeconds = Math.max(0, Math.floor(diffMs / 1000));
+        const hrs = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
+        const mins = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
+        const secs = String(totalSeconds % 60).padStart(2, '0');
+
+        document.getElementById('countdownTimer').textContent = `${hrs}:${mins}:${secs}`;
+
+        renderCards(nextPrayer.id);
+    }
+
+    function renderCards(activeId) {
+        const container = document.getElementById('prayersList');
+        container.innerHTML = prayersData.map(p => {
+            const isActive = p.id === activeId ? 'active' : '';
+            return `
+                <div class="prayer-card ${isActive}">
+                    <div class="prayer-right">
+                        <div class="icon-circle">${iconsSVG[p.icon]}</div>
+                        <div class="prayer-title">${p.name}</div>
+                    </div>
+                    <div class="prayer-time">${p.display}</div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    updateDateDisplay();
+    updatePrayerCountdown();
+    setInterval(updatePrayerCountdown, 1000);
+</script>
+
+</body>
+</html>
